@@ -3,98 +3,47 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Vilar | أحذية نسائية</title>
-  <meta name="description" content="Vilar : chaussures pour femme élégantes et confortables. Paiement à la livraison. | أحذية نسائية أنيقة، الدفع عند الاستلام.">
-  <meta property="og:title" content="Vilar">
-  <meta property="og:type" content="website">
-  <meta name="theme-color" content="#FAF7F2">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Noto+Naskh+Arabic:wght@500;600&family=Tajawal:wght@400;500;700&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Vilar | الإحصائيات</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
-  <a class="skip" href="#main" data-i18n="skip"></a>
-  <div id="announce"></div>
-  <header id="site-header"></header>
-
-  <main id="main">
-    <section class="hero">
-      <div class="hero-copy">
-        <h1 id="hero-title" data-i18n="hero_title"></h1>
-        <p id="hero-sub" data-i18n="hero_sub"></p>
-        <a class="btn" href="shop.html" data-i18n="hero_cta"></a>
-      </div>
-      <div class="hero-art"><div class="arch" id="hero-art"><span class="arch-word" aria-hidden="true">Vilar</span></div></div>
-    </section>
-
-    <p class="empty wrap" id="empty-home" data-i18n="store_soon" hidden></p>
-
-    <section class="section" id="sec-cats" hidden>
-      <div class="wrap">
-        <div class="sec-head"><h2 data-i18n="sec_cats"></h2></div>
-        <div class="cat-grid" id="cat-grid"></div>
-      </div>
-    </section>
-
-    <section class="section tint" id="sec-new" hidden>
-      <div class="wrap">
-        <div class="sec-head"><h2 data-i18n="sec_new"></h2><a class="link-all" href="shop.html?cat=new" data-i18n="view_all"></a></div>
-        <div class="grid" id="grid-new"></div>
-      </div>
-    </section>
-
-    <section class="section" id="sec-best" hidden>
-      <div class="wrap">
-        <div class="sec-head"><h2 data-i18n="sec_best"></h2><a class="link-all" href="shop.html" data-i18n="view_all"></a></div>
-        <div class="grid" id="grid-best"></div>
-      </div>
-    </section>
-
-    <section class="section tint" id="sec-sale" hidden>
-      <div class="wrap">
-        <div class="sec-head"><h2 data-i18n="sec_sale"></h2><a class="link-all" href="shop.html?cat=sale" data-i18n="view_all"></a></div>
-        <div class="grid" id="grid-sale"></div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="wrap features">
-        <div class="feature"><h3 data-i18n="f1"></h3><p data-i18n="f1d"></p></div>
-        <div class="feature"><h3 data-i18n="f2"></h3><p data-i18n="f2d"></p></div>
-        <div class="feature"><h3 data-i18n="f3"></h3><p data-i18n="f3d"></p></div>
-      </div>
-    </section>
-
-    <section class="section tint" id="sec-reviews" hidden>
-      <div class="wrap">
-        <div class="sec-head"><h2 data-i18n="sec_reviews"></h2></div>
-        <div class="reviews" id="review-list"></div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="wrap newsletter">
-        <h2 data-i18n="nl_title"></h2>
-        <p class="muted" data-i18n="nl_sub"></p>
-        <form class="nl-form" id="nl-form" novalidate>
-          <input class="field" type="email" name="email" autocomplete="email" inputmode="email" data-i18n-ph="nl_email" data-i18n-aria="nl_email" dir="ltr">
-          <button class="btn" type="submit" data-i18n="nl_btn"></button>
-        </form>
-        <div class="nl-msg" id="nl-msg" role="status"></div>
-      </div>
-    </section>
-  </main>
-
-  <footer id="site-footer"></footer>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="shell">
+    <aside id="side"></aside>
+    <div class="content">
+      <header id="top"></header>
+      <main id="app">
+        <div class="page-title">
+          <h1>الإحصائيات</h1>
+          <select class="field" id="period" style="width:auto" aria-label="الفترة">
+            <option value="today">اليوم</option>
+            <option value="7">آخر 7 أيام</option>
+            <option value="30" selected>آخر 30 يوماً</option>
+            <option value="month">هذا الشهر</option>
+            <option value="all">الكل</option>
+          </select>
+        </div>
+        <div class="kpis" id="kpis"></div>
+        <div class="row2">
+          <div class="card"><h2>الطلبات حسب الحالة</h2><div class="bars" id="bars"></div></div>
+          <div class="card"><h2>أكثر المنتجات طلباً</h2><div id="top-products"></div></div>
+        </div>
+        <div class="card" id="lp-card" hidden><h2>صفحات الهبوط</h2>
+          <div class="tablewrap"><table><thead><tr><th>الصفحة</th><th>الزيارات</th><th>الطلبات</th><th>التحويل</th></tr></thead><tbody id="lp-body"></tbody></table></div>
+        </div>
+        <div class="card"><h2>آخر الطلبات</h2>
+          <div class="tablewrap"><table><thead><tr><th>الرقم</th><th>التاريخ</th><th>الزبونة</th><th>الولاية</th><th>المجموع</th><th>الحالة</th></tr></thead><tbody id="recent"></tbody></table></div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-  <script src="assets/js/config.js"></script>
-  <script src="assets/js/supabase-client.js"></script>
-  <script src="assets/js/i18n.js"></script>
-  <script src="assets/js/cart.js"></script>
-  <script src="assets/js/ui.js"></script>
-  <script src="assets/js/home.js"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/dashboard.js"></script>
 </body>
 </html>
