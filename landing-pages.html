@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Vilar | صفحات الهبوط</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <div class="shell">
+    <aside id="side"></aside>
+    <div class="content">
+      <header id="top"></header>
+      <main id="app">
+        <div class="page-title">
+          <h1>صفحات الهبوط</h1>
+          <a class="btn" href="landing-edit.html">+ صفحة هبوط جديدة</a>
+        </div>
+        <p class="muted">انسخ رابط الصفحة وضعه في إعلانات فيسبوك أو إنستغرام أو تيك توك. الرابط يعمل بعد نشر الموقع على الاستضافة.</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>الصفحة</th><th>الزيارات</th><th>الطلبات</th><th>التحويل</th><th>منشورة</th><th></th></tr></thead>
+            <tbody id="rows"><tr><td colspan="6" class="empty">جاري التحميل…</td></tr></tbody>
+          </table>
+        </div>
+
+        <div class="card" style="margin-top:22px">
+          <h2>الإعلانات والتتبع</h2>
+          <p class="muted">أدخل معرّف البكسل ليتتبع فيسبوك وتيك توك الزيارات والطلبات. اتركه فارغاً لتعطيل التتبع.</p>
+          <form class="row2" id="tform" novalidate>
+            <div><label class="lbl" for="meta">Meta Pixel ID (أرقام)</label><input class="field" id="meta" dir="ltr" inputmode="numeric" maxlength="20"></div>
+            <div><label class="lbl" for="tt">TikTok Pixel ID</label><input class="field" id="tt" dir="ltr" maxlength="30"></div>
+            <div class="msg" id="tmsg" role="status"></div>
+            <div><button class="btn" type="submit">حفظ</button></div>
+          </form>
+        </div>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/landing-pages.js"></script>
+</body>
+</html>

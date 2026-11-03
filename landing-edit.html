@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Vilar | صفحة هبوط</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <div class="shell">
+    <aside id="side"></aside>
+    <div class="content">
+      <header id="top"></header>
+      <main id="app">
+        <div class="page-title">
+          <h1 id="title">صفحة هبوط جديدة</h1>
+          <a class="btn ghost" href="landing-pages.html">← كل الصفحات</a>
+        </div>
+
+        <form id="lform" novalidate>
+          <div class="card stack">
+            <h2>الأساسيات</h2>
+            <div class="row2">
+              <div><label class="lbl" for="f-title">اسم داخلي للصفحة *</label><input class="field" id="f-title" maxlength="120" placeholder="حملة الصنادل - نوفمبر"></div>
+              <div><label class="lbl" for="f-slug">الرابط (slug) *</label><input class="field" id="f-slug" maxlength="80" dir="ltr" placeholder="sandale-beige"></div>
+            </div>
+            <div class="row2">
+              <div><label class="lbl" for="f-lang">لغة الصفحة</label>
+                <select class="field" id="f-lang"><option value="ar">العربية (RTL)</option><option value="fr">Français</option></select></div>
+              <div style="display:flex;align-items:end"><label class="check"><input type="checkbox" id="f-pub"> منشورة (ظاهرة للزوار)</label></div>
+            </div>
+          </div>
+
+          <div class="card stack">
+            <h2>النص التسويقي</h2>
+            <div><label class="lbl" for="f-headline">العنوان الرئيسي *</label><input class="field" id="f-headline" maxlength="160"></div>
+            <div><label class="lbl" for="f-sub">عنوان فرعي</label><input class="field" id="f-sub" maxlength="240"></div>
+            <div><label class="lbl" for="f-desc">وصف المنتج</label><textarea class="field" id="f-desc" rows="4" maxlength="2000"></textarea></div>
+            <div class="row2">
+              <div><label class="lbl" for="f-cta">نص زر الطلب</label><input class="field" id="f-cta" maxlength="40" value="Commander maintenant"></div>
+              <div><label class="lbl" for="f-ends">نهاية العرض (اختياري)</label><input class="field" id="f-ends" type="datetime-local" dir="ltr">
+                <span class="muted" style="font-size:.85rem">بعد هذا الوقت يعود السعر العادي تلقائياً ويتوقف المؤقت.</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>المنتجات المرتبطة</h2>
+            <p class="muted">اختر منتجاً أو أكثر. «سعر العرض» يُطبَّق على هذه الصفحة فقط (اتركه فارغاً لاستعمال سعر المنتج العادي). عند اختيار أكثر من منتج تختار الزبونة الموديل داخل الصفحة.</p>
+            <div class="tablewrap">
+              <table style="min-width:560px">
+                <thead><tr><th>إدراج</th><th>المنتج</th><th>سعره</th><th>سعر العرض (د.ج)</th><th>الترتيب</th></tr></thead>
+                <tbody id="prows"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>الصورة الرئيسية</h2>
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+              <img id="hero-prev" alt="" hidden style="width:90px;aspect-ratio:4/5;object-fit:cover;border-radius:2px">
+              <input type="file" id="hero-file" accept="image/jpeg,image/png,image/webp" hidden>
+              <button class="btn ghost sm" type="button" id="hero-pick">اختيار صورة</button>
+              <button class="btn ghost sm" type="button" id="hero-clear" hidden>إزالة</button>
+              <span class="muted" id="hero-msg" role="status"></span>
+            </div>
+            <p class="muted" style="margin:8px 0 0">إذا تركتها فارغة تُستعمل أول صورة للمنتج.</p>
+          </div>
+
+          <div class="card">
+            <h2>معرض الصور</h2>
+            <input type="file" id="gal-file" accept="image/jpeg,image/png,image/webp" multiple hidden>
+            <button class="btn ghost sm" type="button" id="gal-pick">+ رفع صور</button>
+            <span class="muted" id="gal-msg" role="status"></span>
+            <div class="imgs" id="gal" style="margin-top:12px"></div>
+          </div>
+
+          <div class="card">
+            <h2>المميزات والفوائد</h2>
+            <div id="feats" class="stack"></div>
+            <button class="btn ghost sm" type="button" id="feat-add" style="margin-top:10px">+ ميزة</button>
+          </div>
+
+          <div class="card">
+            <h2>آراء العملاء</h2>
+            <p class="muted">أدخل آراء حقيقية من زبوناتك فقط.</p>
+            <div id="quotes" class="stack"></div>
+            <button class="btn ghost sm" type="button" id="quote-add" style="margin-top:10px">+ رأي</button>
+          </div>
+
+          <div class="msg" id="msg" role="alert"></div>
+          <button class="btn" type="submit" id="save">حفظ الصفحة</button>
+        </form>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/landing-edit.js"></script>
+</body>
+</html>
