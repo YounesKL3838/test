@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Facture</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#eee;font:14px/1.55 'Segoe UI',Tahoma,Arial,sans-serif;color:#1B1917}
+    .sheet{width:210mm;min-height:297mm;margin:16px auto;background:#fff;padding:18mm;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+    header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #1B1917;padding-bottom:12px;margin-bottom:18px}
+    .brand{font:600 34px Georgia,serif;letter-spacing:.06em}
+    h1{font-size:20px;margin:0;text-align:end}
+    .meta{color:#555;text-align:end}
+    .cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:18px}
+    h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px;color:#555}
+    table{width:100%;border-collapse:collapse;margin-top:6px}
+    th,td{padding:8px 6px;border-bottom:1px solid #ddd;text-align:start}
+    th{background:#f4f0ea;font-size:12px}
+    td.n,th.n{text-align:end;white-space:nowrap}
+    .tot{margin-top:14px;margin-inline-start:auto;width:300px}
+    .tot div{display:flex;justify-content:space-between;padding:4px 0}
+    .tot .g{border-top:2px solid #1B1917;font-weight:700;font-size:16px;margin-top:4px;padding-top:8px}
+    .note{margin-top:26px;padding:10px 12px;background:#f4f0ea}
+    .bar{text-align:center;margin:12px}
+    .bar button{padding:10px 24px;font-size:15px;cursor:pointer}
+    @media print{body{background:#fff}.sheet{margin:0;box-shadow:none;width:auto;min-height:0;padding:0}.bar{display:none}@page{size:A4;margin:16mm}}
+  </style>
+</head>
+<body>
+  <div class="bar"><button type="button" onclick="window.print()">Imprimer</button></div>
+  <div class="sheet" id="sheet"><p>Chargement…</p></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/invoice.js"></script>
+</body>
+</html>
