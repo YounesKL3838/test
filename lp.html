@@ -3,27 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Vilar | السلة</title>
-  <meta name="robots" content="noindex">
-  <meta name="theme-color" content="#FAF7F2">
+  <title>Vilar</title>
+  <meta name="description" content="Vilar">
+  <meta name="theme-color" content="#E9CFCB">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Noto+Naskh+Arabic:wght@500;600&family=Tajawal:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cormorant+Garamond:wght@500;600&family=Tajawal:wght@400;500;700&display=swap">
   <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/landing.css">
 </head>
-<body>
-  <a class="skip" href="#main" data-i18n="skip"></a>
-  <div id="announce"></div>
-  <header id="site-header"></header>
-
-  <main id="main">
-    <div class="wrap">
-      <div class="page-head"><h1 data-i18n="c_title"></h1></div>
-      <div id="cart-root"></div>
-    </div>
-  </main>
-
-  <footer id="site-footer"></footer>
+<body class="lp">
+  <div class="lp-top"><a class="brand" href="index.html">Vilar</a></div>
+  <main id="lp-root"><div class="wrap" style="padding-block:40px"><div class="skeleton" style="max-width:360px;margin:auto"></div></div></main>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -32,6 +23,8 @@
   <script src="assets/js/i18n.js"></script>
   <script src="assets/js/cart.js"></script>
   <script src="assets/js/ui.js"></script>
-  <script src="assets/js/cart-page.js"></script>
+  <script src="assets/js/tracking.js"></script>
+  <script src="assets/js/motion.js"></script>
+  <script src="assets/js/landing.js"></script>
 </body>
 </html>

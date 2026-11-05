@@ -1,6 +1,8 @@
-/* Vilar - checkout.js : formulaire de commande (paiement à la livraison)
-   Le serveur (create_order) revalide tout et recalcule les prix. */
-(function () {
+/* Vilar - views/checkout.js : vue de la boutique (affichée dans index.html) */
+window.Views = window.Views || {};
+Views["checkout"] = {
+  tpl: "<div class=\"wrap\">\n      <div class=\"page-head\"><h1 data-i18n=\"k_title\"></h1></div>\n      <div class=\"checkout\" id=\"checkout\" hidden>\n        <form id=\"order-form\" novalidate>\n          <div class=\"f\">\n            <label for=\"f-name\" data-i18n=\"k_name\"></label>\n            <input class=\"field\" id=\"f-name\" name=\"fullname\" autocomplete=\"name\" maxlength=\"100\">\n            <div class=\"ferr\" data-for=\"fullname\" role=\"alert\"></div>\n          </div>\n          <div class=\"f\">\n            <label for=\"f-phone\" data-i18n=\"k_phone\"></label>\n            <input class=\"field\" id=\"f-phone\" name=\"phone\" type=\"tel\" inputmode=\"tel\" autocomplete=\"tel\" maxlength=\"20\" dir=\"ltr\" placeholder=\"05XX XX XX XX\">\n            <div class=\"ferr\" data-for=\"phone\" role=\"alert\"></div>\n          </div>\n          <div class=\"f\">\n            <label for=\"f-wilaya\" data-i18n=\"k_wilaya\"></label>\n            <select class=\"field\" id=\"f-wilaya\" name=\"wilaya\"></select>\n            <div class=\"ferr\" data-for=\"wilaya\" role=\"alert\"></div>\n          </div>\n          <div class=\"f\">\n            <label for=\"f-commune\" data-i18n=\"k_commune\"></label>\n            <input class=\"field\" id=\"f-commune\" name=\"commune\" autocomplete=\"address-level2\" maxlength=\"100\">\n            <div class=\"ferr\" data-for=\"commune\" role=\"alert\"></div>\n          </div>\n          <div class=\"f\">\n            <label for=\"f-address\" data-i18n=\"k_address\"></label>\n            <textarea class=\"field\" id=\"f-address\" name=\"address\" rows=\"2\" autocomplete=\"street-address\" maxlength=\"300\"></textarea>\n            <div class=\"ferr\" data-for=\"address\" role=\"alert\"></div>\n          </div>\n          <fieldset class=\"f dtype\">\n            <legend data-i18n=\"k_dtype\"></legend>\n            <label class=\"opt\"><input type=\"radio\" name=\"dtype\" value=\"home\" checked> <span data-i18n=\"k_home\"></span></label>\n            <label class=\"opt\"><input type=\"radio\" name=\"dtype\" value=\"desk\"> <span data-i18n=\"k_desk\"></span></label>\n          </fieldset>\n          <div class=\"f\">\n            <label for=\"f-notes\" data-i18n=\"k_notes\"></label>\n            <textarea class=\"field\" id=\"f-notes\" name=\"notes\" rows=\"2\" maxlength=\"500\"></textarea>\n          </div>\n          <div class=\"msg err\" id=\"form-msg\" role=\"alert\"></div>\n          <button class=\"btn btn-block\" id=\"submit\" type=\"submit\" data-i18n=\"k_submit\"></button>\n        </form>\n        <aside class=\"summary\" id=\"summary\" aria-label=\"Récapitulatif\"></aside>\n      </div>\n      <div id=\"checkout-empty\" hidden></div>\n    </div>",
+  run: function (params) {
   var t = I18N.t, pick = I18N.pick, esc = UI.esc, money = I18N.money;
   var form = document.getElementById('order-form');
   var summaryEl = document.getElementById('summary');
@@ -42,7 +44,7 @@
     var subtotal = 0;
     var lines = items.map(function (i) {
       subtotal += i.price * i.qty;
-      return '<div class="row"><span>' + esc(pick(i, 'name')) + ' <span class="muted">(' + esc(i.size) + ', ' + esc(i.color) + ') × ' + i.qty + '</span></span>' +
+      return '<div class="row"><span>' + esc(pick(i, 'name')) + ' <span class="muted"><bdi>(' + esc(i.size) + ', ' + esc(i.color) + ')</bdi> <bdi dir="ltr">× ' + i.qty + '</bdi></span></span>' +
         '<b>' + money(i.price * i.qty) + '</b></div>';
     }).join('');
     var f = fee(), feeTxt = f === null ? '—' : (f === 0 ? t('k_free') : money(f));
@@ -160,14 +162,14 @@
       var d = r.data || {};
       try { sessionStorage.removeItem('vilar_idem'); } catch (x) {}
       Cart.clear();
-      location.href = 'thank-you.html?o=' + encodeURIComponent(d.order_number) +
+      location.href = '#/thanks?o=' + encodeURIComponent(d.order_number) +
         '&t=' + encodeURIComponent(d.total) + (d.duplicate ? '&d=1' : '');
     }).catch(function (err) {
       setBusy(false);
       var key = errorKey(err);
       msg.textContent = t(key);
       if (key === 'e_stock') {
-        msg.innerHTML = esc(t(key)) + ' <a href="cart.html">' + esc(t('go_cart')) + '</a>';
+        msg.innerHTML = esc(t(key)) + ' <a href="#/cart">' + esc(t('go_cart')) + '</a>';
       } else if (/^e_(name|phone|wilaya|commune|address)$/.test(key)) {
         setErr(key === 'e_name' ? 'fullname' : key.slice(2), key);
       }
@@ -179,11 +181,11 @@
   });
 
   /* ---------- Démarrage ---------- */
-  UI.init().then(function () {
+  Promise.resolve().then(function () {
     if (!window.VILAR_CONFIGURED) return;
     return Promise.all([refreshCart(), loadZones()]).then(function (res) {
       items = res[0]; zones = res[1];
-      if (!items.length && !hasGone) { location.replace('cart.html'); return; }
+      if (!items.length && !hasGone) { location.replace('#/cart'); return; }
       var box = document.getElementById('checkout');
       box.hidden = false;
       if (!zones.length) {
@@ -193,8 +195,9 @@
       }
       fillWilayas(); renderSummary();
       if (hasGone) {
-        document.getElementById('form-msg').innerHTML = esc(t('e_stock')) + ' <a href="cart.html">' + esc(t('go_cart')) + '</a>';
+        document.getElementById('form-msg').innerHTML = esc(t('e_stock')) + ' <a href="#/cart">' + esc(t('go_cart')) + '</a>';
       }
     }).catch(function () { UI.notice('err_load'); });
   });
-})();
+}
+};

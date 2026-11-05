@@ -1,5 +1,8 @@
-/* Vilar - product.js : fiche produit */
-(function () {
+/* Vilar - views/product.js : vue de la boutique (affichée dans index.html) */
+window.Views = window.Views || {};
+Views["product"] = {
+  tpl: "<div class=\"wrap\">\n      <div class=\"product\" id=\"product\">\n        <div class=\"gallery\">\n          <div class=\"gallery-main skeleton\" id=\"g-main\"></div>\n          <div class=\"thumbs\" id=\"thumbs\"></div>\n        </div>\n        <div class=\"info\" id=\"info\"></div>\n      </div>\n    </div>\n    <section class=\"section tint\" id=\"sec-similar\" hidden>\n      <div class=\"wrap\">\n        <div class=\"sec-head\"><h2 data-i18n=\"p_similar\"></h2></div>\n        <div class=\"grid\" id=\"grid-similar\"></div>\n      </div>\n    </section>",
+  run: function (params) {
   var t = I18N.t, pick = I18N.pick, esc = UI.esc, money = I18N.money;
   var infoEl = document.getElementById('info');
   var p = null, sel = { color: null, size: null, qty: 1 };
@@ -90,7 +93,7 @@
     var metaDesc = document.querySelector('meta[name=description]');
     if (metaDesc) metaDesc.content = (desc || name).replace(/\s+/g, ' ').slice(0, 155);
     function og(prop, val) {
-      var m = document.createElement('meta'); m.setAttribute('property', prop); m.content = val; document.head.appendChild(m);
+      var m = document.createElement('meta'); m.setAttribute('data-dyn', '1'); m.setAttribute('property', prop); m.content = val; document.head.appendChild(m);
     }
     og('og:title', name); og('og:type', 'product'); if (p.images[0]) og('og:image', p.images[0]);
 
@@ -104,7 +107,7 @@
       }).join('');
       document.getElementById('thumbs').addEventListener('click', function (e) {
         var b = e.target.closest('.thumb'); if (!b) return;
-        document.getElementById('g-img').src = p.images[+b.dataset.i];
+        var gi = document.getElementById('g-img'); gi.src = p.images[+b.dataset.i]; gi.classList.remove('swap'); void gi.offsetWidth; gi.classList.add('swap');
         document.querySelectorAll('.thumb').forEach(function (x) { x.removeAttribute('aria-current'); });
         b.setAttribute('aria-current', 'true');
       });
@@ -140,12 +143,12 @@
       } else if (b.id === 'q-minus') { sel.qty = Math.max(1, sel.qty - 1); renderOptions(); }
       else if (b.id === 'q-plus') { sel.qty = sel.qty + 1; renderOptions(); }
       else if (b.id === 'btn-add') { if (addToCart()) UI.toast(t('p_added')); }
-      else if (b.id === 'btn-buy') { if (addToCart()) location.href = (window.VILAR_CONFIG && VILAR_CONFIG.CHECKOUT_URL) || 'cart.html'; }
+      else if (b.id === 'btn-buy') { if (addToCart()) location.hash = '#/checkout'; }
     });
 
     // Données structurées (SEO)
     var ld = document.createElement('script');
-    ld.type = 'application/ld+json';
+    ld.type = 'application/ld+json'; ld.setAttribute('data-dyn', '1');
     ld.textContent = JSON.stringify({
       '@context': 'https://schema.org', '@type': 'Product', name: name,
       image: p.images, description: desc || name,
@@ -166,12 +169,12 @@
 
   function notFound() {
     document.getElementById('g-main').classList.remove('skeleton');
-    infoEl.innerHTML = '<h1>' + esc(t('p_notfound')) + '</h1><p><a class="btn" href="shop.html">' + esc(t('p_back')) + '</a></p>';
+    infoEl.innerHTML = '<h1>' + esc(t('p_notfound')) + '</h1><p><a class="btn" href="#/shop">' + esc(t('p_back')) + '</a></p>';
   }
 
-  UI.init().then(function () {
+  Promise.resolve().then(function () {
     if (!window.VILAR_CONFIGURED) return;
-    var slug = new URLSearchParams(location.search).get('slug');
+    var slug = params.slug;
     if (!slug || !/^[a-z0-9-]+$/.test(slug)) return notFound();
     return UI.fetchProduct(slug).then(function (prod) {
       if (!prod) return notFound();
@@ -179,4 +182,5 @@
       return UI.fetchProducts().then(renderSimilar);
     }).catch(function () { notFound(); UI.notice('err_load'); });
   });
-})();
+}
+};

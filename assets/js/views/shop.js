@@ -1,5 +1,8 @@
-/* Vilar - shop.js : catalogue, filtres (catégorie, prix, pointure, couleur), tri */
-(function () {
+/* Vilar - views/shop.js : vue de la boutique (affichée dans index.html) */
+window.Views = window.Views || {};
+Views["shop"] = {
+  tpl: "<div class=\"wrap\">\n      <div class=\"page-head\"><h1 id=\"shop-title\" data-i18n=\"nav_shop\"></h1></div>\n      <div class=\"shop\">\n        <aside class=\"filters\" id=\"filters\" aria-label=\"Filtres\"></aside>\n        <section>\n          <div class=\"toolbar\">\n            <button class=\"btn btn-ghost filter-toggle\" id=\"filter-toggle\" type=\"button\" aria-expanded=\"false\" aria-controls=\"filters\" data-i18n=\"f_show\"></button>\n            <span class=\"muted\" id=\"count\" role=\"status\"></span>\n            <label class=\"muted\"><span data-i18n=\"sort\"></span>\n              <select id=\"sort\">\n                <option value=\"new\" data-i18n=\"s_new\"></option>\n                <option value=\"asc\" data-i18n=\"s_asc\"></option>\n                <option value=\"desc\" data-i18n=\"s_desc\"></option>\n              </select>\n            </label>\n          </div>\n          <div class=\"grid\" id=\"grid\"></div>\n          <p class=\"empty\" id=\"no-results\" data-i18n=\"no_results\" hidden></p>\n        </section>\n      </div>\n    </div>",
+  run: function (params) {
   var t = I18N.t, pick = I18N.pick, esc = UI.esc;
   var state = { cat: 'all', min: null, max: null, sizes: new Set(), colors: new Set(), sort: 'new' };
   var products = [], cats = [];
@@ -84,9 +87,8 @@
   }
 
   function syncUrl() {
-    var u = new URL(location.href);
-    if (state.cat === 'all') u.searchParams.delete('cat'); else u.searchParams.set('cat', state.cat);
-    try { history.replaceState(null, '', u); } catch (e) { /* ouverture via file:// : on ignore */ }
+    var hash = '#/shop' + (state.cat === 'all' ? '' : '?cat=' + encodeURIComponent(state.cat));
+    try { history.replaceState(null, '', hash); } catch (e) { /* ouverture via file:// : on ignore */ }
     updateTitle();
   }
   function updateTitle() {
@@ -131,9 +133,9 @@
     });
   }
 
-  UI.init().then(function () {
+  Promise.resolve().then(function () {
     if (!window.VILAR_CONFIGURED) return;
-    var q = new URLSearchParams(location.search).get('cat');
+    var q = params.qs.get('cat');
     if (q && /^[a-z0-9-]+$/.test(q)) state.cat = q;
     gridEl.innerHTML = UI.skeletons(6);
     return Promise.all([
@@ -144,4 +146,5 @@
       renderFilters(); bind(); updateTitle(); render();
     }).catch(function () { gridEl.innerHTML = ''; UI.notice('err_load'); });
   });
-})();
+}
+};

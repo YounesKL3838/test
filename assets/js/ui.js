@@ -60,9 +60,9 @@
     var img1 = p.images[0], img2 = p.images[1];
     var badges = '';
     if (!p.available) badges += '<span class="badge sold">' + esc(t('badge_sold')) + '</span>';
-    if (pct) badges += '<span class="badge sale">-' + pct + '%</span>';
+    if (pct) badges += '<span class="badge sale"><bdi dir="ltr">-' + pct + '%</bdi></span>';
     if (p.is_new) badges += '<span class="badge">' + esc(t('badge_new')) + '</span>';
-    return '<a class="card" href="product.html?slug=' + encodeURIComponent(p.slug) + '">' +
+    return '<a class="card" href="#/product/' + encodeURIComponent(p.slug) + '">' +
       '<div class="card-media">' + (badges ? '<div class="badges">' + badges + '</div>' : '') +
       (img1 ? '<img src="' + esc(img1) + '" alt="' + esc(name) + '" loading="lazy" decoding="async" width="600" height="750">' : '') +
       (img2 ? '<img class="alt" src="' + esc(img2) + '" alt="" loading="lazy" decoding="async" width="600" height="750">' : '') +
@@ -96,22 +96,19 @@
   function renderHeader() {
     var host = document.getElementById('site-header');
     if (!host) return;
-    var page = (location.pathname.split('/').pop() || 'index.html');
-    var cat = new URLSearchParams(location.search).get('cat');
-    function cur(href, isPage, c) { return (page === isPage && (cat || '') === (c || '')) ? ' aria-current="page"' : ''; }
     host.className = 'site-header';
     host.innerHTML =
       '<div class="bar">' +
       '<button class="icon-btn menu-btn" type="button" aria-expanded="false" aria-controls="nav" aria-label="' + esc(t('menu')) + '">' + ICON_MENU + '</button>' +
-      '<a class="brand" href="index.html">Vilar</a>' +
+      '<a class="brand" href="#/">Vilar</a>' +
       '<nav class="nav" id="nav">' +
-      '<a href="index.html"' + cur('', 'index.html', '') + '>' + esc(t('nav_home')) + '</a>' +
-      '<a href="shop.html"' + cur('', 'shop.html', '') + '>' + esc(t('nav_shop')) + '</a>' +
-      '<a href="shop.html?cat=new"' + cur('', 'shop.html', 'new') + '>' + esc(t('nav_new')) + '</a>' +
-      '<a href="shop.html?cat=sale"' + cur('', 'shop.html', 'sale') + '>' + esc(t('nav_sale')) + '</a>' +
+      '<a href="#/" data-r="/">' + esc(t('nav_home')) + '</a>' +
+      '<a href="#/shop" data-r="/shop">' + esc(t('nav_shop')) + '</a>' +
+      '<a href="#/shop?cat=new" data-r="/shop?cat=new">' + esc(t('nav_new')) + '</a>' +
+      '<a href="#/shop?cat=sale" data-r="/shop?cat=sale">' + esc(t('nav_sale')) + '</a>' +
       '</nav>' +
       '<div class="tools"><button class="lang-btn" type="button">' + esc(t('lang_other')) + '</button>' +
-      '<a class="icon-btn" href="cart.html" aria-label="' + esc(t('cart')) + '">' + ICON_BAG + '<span class="cart-count" hidden></span></a></div></div>';
+      '<a class="icon-btn" href="#/cart" aria-label="' + esc(t('cart')) + '">' + ICON_BAG + '<span class="cart-count" hidden></span></a></div></div>';
 
     var btn = host.querySelector('.menu-btn'), nav = host.querySelector('.nav');
     btn.addEventListener('click', function () {
@@ -119,7 +116,17 @@
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
     host.querySelector('.lang-btn').addEventListener('click', function () { I18N.setLang(I18N.other); });
-    updateCount();
+    updateCount(); markNav();
+  }
+  // Met en évidence le lien du menu correspondant à la route courante et referme le menu mobile
+  function markNav() {
+    var cur = location.hash.replace(/^#/, '') || '/';
+    document.querySelectorAll('#nav a').forEach(function (a) {
+      if (a.dataset.r === cur) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    var nav = document.getElementById('nav'), btn = document.querySelector('.menu-btn');
+    if (nav) nav.classList.remove('open');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
   }
   function updateCount() {
     var el = document.querySelector('.cart-count');
@@ -139,15 +146,47 @@
       var u = safeUrl(c[k]);
       if (u) items += '<li><a href="' + esc(u) + '" rel="noopener" target="_blank">' + k.charAt(0).toUpperCase() + k.slice(1) + '</a></li>';
     });
+    var po = (s && s.policies) || {}, pitems = '';
+    ['delivery', 'returns', 'privacy'].forEach(function (k) {
+      if (po[k + '_ar'] || po[k + '_fr']) pitems += '<li><a href="#/page/' + k + '">' + esc(t('pol_' + k)) + '</a></li>';
+    });
     host.className = 'site-footer';
     host.innerHTML =
-      '<div class="foot"><div><a class="brand" href="index.html">Vilar</a><p>' + esc(t('foot_tag')) + '</p></div>' +
+      '<div class="foot"><div><a class="brand" href="#/">Vilar</a><p>' + esc(t('foot_tag')) + '</p></div>' +
       '<div><h4>' + esc(t('foot_shop')) + '</h4><ul>' +
-      '<li><a href="shop.html">' + esc(t('nav_shop')) + '</a></li>' +
-      '<li><a href="shop.html?cat=new">' + esc(t('nav_new')) + '</a></li>' +
-      '<li><a href="shop.html?cat=sale">' + esc(t('nav_sale')) + '</a></li></ul></div>' +
-      (items ? '<div><h4>' + esc(t('foot_contact')) + '</h4><ul>' + items + '</ul></div>' : '<div></div>') +
-      '</div><div class="copy">© ' + new Date().getFullYear() + ' Vilar</div>';
+      '<li><a href="#/shop">' + esc(t('nav_shop')) + '</a></li>' +
+      '<li><a href="#/shop?cat=new">' + esc(t('nav_new')) + '</a></li>' +
+      '<li><a href="#/shop?cat=sale">' + esc(t('nav_sale')) + '</a></li></ul></div>' +
+      (pitems ? '<div><h4>' + esc(t('foot_info')) + '</h4><ul>' + pitems + '</ul></div>' : '') +
+      (items ? '<div><h4>' + esc(t('foot_contact')) + '</h4><ul>' + items + '</ul></div>' : '') +
+      '</div><div class="copy">© ' + new Date().getFullYear() + ' ' + esc((s && s.store && s.store.name) || 'Vilar') + '</div>';
+  }
+
+  /* ---------- Thème (couleurs choisies dans l'admin) et image de marque ---------- */
+  function hexToRgb(h) { return [1, 3, 5].map(function (i) { return parseInt(h.slice(i, i + 2), 16); }); }
+  function blend(a, b, w) {
+    var x = hexToRgb(a), y = hexToRgb(b);
+    return '#' + x.map(function (v, i) { return ('0' + Math.round(v * (1 - w) + y[i] * w).toString(16)).slice(-2); }).join('');
+  }
+  function applyTheme(th) {
+    if (!th) return;
+    var ok = function (v) { return /^#[0-9a-f]{6}$/i.test(v || ''); }, r = document.documentElement.style;
+    if (ok(th.bg)) {
+      r.setProperty('--ivory', th.bg);
+      r.setProperty('--bone', blend(th.bg, ok(th.beige) ? th.beige : '#D9C7B0', 0.25));
+      var tc = document.querySelector('meta[name=theme-color]'); if (tc) tc.content = th.bg;
+    }
+    if (ok(th.text)) r.setProperty('--ink', th.text);
+    if (ok(th.accent)) r.setProperty('--blush', th.accent);
+    if (ok(th.beige)) r.setProperty('--sand', th.beige);
+  }
+  function applyBranding(st) {
+    var name = (st && st.name) || 'Vilar', logo = safeUrl(st && st.logo_url);
+    document.querySelectorAll('.brand').forEach(function (b) {
+      var inHeader = !!b.closest('.site-header, .lp-top');
+      if (logo && inHeader) b.innerHTML = '<img class="brand-img" src="' + esc(logo) + '" alt="' + esc(name) + '" height="40">';
+      else b.textContent = name;
+    });
   }
 
   function renderAnnouncement(s) {
@@ -178,10 +217,10 @@
     window.addEventListener('storage', updateCount);
     I18N.apply();
     if (!window.VILAR_CONFIGURED) { notice('err_setup'); return Promise.resolve({}); }
-    return settings().then(function (s) { renderFooter(s); renderAnnouncement(s); return s; });
+    return settings().then(function (s) { applyTheme(s.theme); renderFooter(s); applyBranding(s.store); renderAnnouncement(s); return s; });
   }
 
-  window.UI = { esc: esc, safeUrl: safeUrl, init: init, settings: settings, fetchProducts: fetchProducts,
+  window.UI = { applyTheme: applyTheme, applyBranding: applyBranding, markNav: markNav, captureUtm: captureUtm, esc: esc, safeUrl: safeUrl, init: init, settings: settings, fetchProducts: fetchProducts,
                 fetchProduct: fetchProduct, productCard: productCard, priceHtml: priceHtml, discountPct: discountPct,
                 skeletons: skeletons, toast: toast, notice: notice };
 })();

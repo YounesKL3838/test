@@ -41,6 +41,10 @@
       ty_title: 'تم استلام طلبك', ty_num: 'رقم الطلب', ty_total: 'المبلغ عند الاستلام',
       ty_msg: 'سنتصل بك قريباً لتأكيد الطلب.', ty_dup: 'هذا الطلب مسجل مسبقاً ولم يتم تكراره.',
       ty_more: 'متابعة التسوق',
+      foot_info: 'معلومات', pol_delivery: 'سياسة التوصيل', pol_returns: 'الاستبدال والإرجاع', pol_privacy: 'سياسة الخصوصية',
+      lp_ends: 'ينتهي العرض خلال', lp_expired: 'انتهى العرض', lp_d: 'يوم', lp_h: 'ساعة', lp_m: 'دقيقة', lp_s: 'ثانية',
+      lp_pick: 'اختاري الموديل', lp_order_title: 'اطلبي الآن والدفع عند الاستلام', lp_soldout: 'غير متوفر حالياً',
+      lp_notfound: 'هذه الصفحة غير متاحة.', lp_s1: 'اختاري المقاس والكمية', lp_s2: 'معلومات التوصيل', lp_s3: 'ملخص الطلب', lp_gallery: 'تفاصيل المنتج', lp_save: 'وفّري',
       err_load: 'تعذر تحميل البيانات. أعيدي المحاولة.', err_setup: 'المتجر غير مربوط بقاعدة البيانات بعد. عدّلي ملف assets/js/config.js.'
     },
     fr: {
@@ -84,6 +88,10 @@
       ty_msg: 'Nous vous appellerons bientôt pour confirmer votre commande.',
       ty_dup: "Cette commande était déjà enregistrée, elle n'a pas été dupliquée.",
       ty_more: 'Continuer vos achats',
+      foot_info: 'Informations', pol_delivery: 'Politique de livraison', pol_returns: 'Échange et retour', pol_privacy: 'Politique de confidentialité',
+      lp_ends: "L'offre se termine dans", lp_expired: 'Offre terminée', lp_d: 'j', lp_h: 'h', lp_m: 'min', lp_s: 's',
+      lp_pick: 'Choisissez le modèle', lp_order_title: 'Commandez maintenant, paiement à la livraison', lp_soldout: 'Indisponible pour le moment',
+      lp_notfound: "Cette page n'est pas disponible.", lp_s1: 'Choisissez pointure et quantité', lp_s2: 'Informations de livraison', lp_s3: 'Récapitulatif', lp_gallery: 'Détails du produit', lp_save: 'Économisez',
       err_load: 'Chargement impossible. Réessayez.', err_setup: "La boutique n'est pas encore reliée à la base de données. Modifiez assets/js/config.js."
     }
   };
@@ -100,6 +108,16 @@
     if (vars) for (var v in vars) s = s.replace('{' + v + '}', vars[v]);
     return s;
   }
+  function tFor(l) {
+    var o = l === 'ar' ? 'fr' : 'ar';
+    return function (k, vars) {
+      var s = D[l] && D[l][k];
+      if (s === undefined) s = D[o][k];
+      if (s === undefined) s = k;
+      if (vars) for (var v in vars) s = s.replace('{' + v + '}', vars[v]);
+      return s;
+    };
+  }
   function apply(root) {
     root = root || document;
     document.documentElement.lang = lang;
@@ -113,10 +131,10 @@
     location.reload();
   }
   var nf = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 });
-  function money(n) { return nf.format(Math.round(Number(n) || 0)).replace(/\u202f|\u00a0/g, ' ') + ' ' + t('currency'); }
+  function money(n) { return nf.format(Math.round(Number(n) || 0)).replace(/[\u202f\u00a0\s]/g, '\u00a0') + '\u00a0' + t('currency'); }
   function pick(obj, field) { return (obj && (obj[field + '_' + lang] || obj[field + '_' + other])) || ''; }
 
-  window.I18N = { t: t, apply: apply, setLang: setLang, money: money, pick: pick,
+  window.I18N = { tFor: tFor, t: t, apply: apply, setLang: setLang, money: money, pick: pick,
                   get lang() { return lang; }, get other() { return other; } };
   apply();
 })();

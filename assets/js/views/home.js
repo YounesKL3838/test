@@ -1,5 +1,8 @@
-/* Vilar - home.js */
-(function () {
+/* Vilar - views/home.js : vue de la boutique (affichée dans index.html) */
+window.Views = window.Views || {};
+Views["home"] = {
+  tpl: "<section class=\"hero\">\n      <div class=\"hero-copy\">\n        <h1 id=\"hero-title\" data-i18n=\"hero_title\"></h1>\n        <p id=\"hero-sub\" data-i18n=\"hero_sub\"></p>\n        <a class=\"btn\" href=\"#/shop\" data-i18n=\"hero_cta\"></a>\n      </div>\n      <div class=\"hero-art\"><div class=\"arch\" id=\"hero-art\"><span class=\"arch-word\" aria-hidden=\"true\">Vilar</span></div></div>\n    </section>\n\n    <p class=\"empty wrap\" id=\"empty-home\" data-i18n=\"store_soon\" hidden></p>\n\n    <section class=\"section\" id=\"sec-cats\" hidden>\n      <div class=\"wrap\">\n        <div class=\"sec-head\"><h2 data-i18n=\"sec_cats\"></h2></div>\n        <div class=\"cat-grid\" id=\"cat-grid\"></div>\n      </div>\n    </section>\n\n    <section class=\"section tint\" id=\"sec-new\" hidden>\n      <div class=\"wrap\">\n        <div class=\"sec-head\"><h2 data-i18n=\"sec_new\"></h2><a class=\"link-all\" href=\"#/shop?cat=new\" data-i18n=\"view_all\"></a></div>\n        <div class=\"grid\" id=\"grid-new\"></div>\n      </div>\n    </section>\n\n    <section class=\"section\" id=\"sec-best\" hidden>\n      <div class=\"wrap\">\n        <div class=\"sec-head\"><h2 data-i18n=\"sec_best\"></h2><a class=\"link-all\" href=\"#/shop\" data-i18n=\"view_all\"></a></div>\n        <div class=\"grid\" id=\"grid-best\"></div>\n      </div>\n    </section>\n\n    <section class=\"section tint\" id=\"sec-sale\" hidden>\n      <div class=\"wrap\">\n        <div class=\"sec-head\"><h2 data-i18n=\"sec_sale\"></h2><a class=\"link-all\" href=\"#/shop?cat=sale\" data-i18n=\"view_all\"></a></div>\n        <div class=\"grid\" id=\"grid-sale\"></div>\n      </div>\n    </section>\n\n    <section class=\"section\">\n      <div class=\"wrap features\">\n        <div class=\"feature\"><h3 data-i18n=\"f1\"></h3><p data-i18n=\"f1d\"></p></div>\n        <div class=\"feature\"><h3 data-i18n=\"f2\"></h3><p data-i18n=\"f2d\"></p></div>\n        <div class=\"feature\"><h3 data-i18n=\"f3\"></h3><p data-i18n=\"f3d\"></p></div>\n      </div>\n    </section>\n\n    <section class=\"section tint\" id=\"sec-reviews\" hidden>\n      <div class=\"wrap\">\n        <div class=\"sec-head\"><h2 data-i18n=\"sec_reviews\"></h2></div>\n        <div class=\"reviews\" id=\"review-list\"></div>\n      </div>\n    </section>\n\n    <section class=\"section\">\n      <div class=\"wrap newsletter\">\n        <h2 data-i18n=\"nl_title\"></h2>\n        <p class=\"muted\" data-i18n=\"nl_sub\"></p>\n        <form class=\"nl-form\" id=\"nl-form\" novalidate>\n          <input class=\"field\" type=\"email\" name=\"email\" autocomplete=\"email\" inputmode=\"email\" data-i18n-ph=\"nl_email\" data-i18n-aria=\"nl_email\" dir=\"ltr\">\n          <button class=\"btn\" type=\"submit\" data-i18n=\"nl_btn\"></button>\n        </form>\n        <div class=\"nl-msg\" id=\"nl-msg\" role=\"status\"></div>\n      </div>\n    </section>",
+  run: function (params) {
   var t = I18N.t, pick = I18N.pick, esc = UI.esc;
 
   function fill(sectionId, gridId, list) {
@@ -28,7 +31,7 @@
     if (!withProducts.length) return;
     document.getElementById('cat-grid').innerHTML = withProducts.map(function (c) {
       var img = UI.safeUrl(c.image_url), name = pick(c, 'name');
-      return '<a class="cat" href="shop.html?cat=' + encodeURIComponent(c.slug) + '">' +
+      return '<a class="cat" href="#/shop?cat=' + encodeURIComponent(c.slug) + '">' +
         '<div class="cat-img">' + (img ? '<img src="' + esc(img) + '" alt="" loading="lazy" decoding="async" width="300" height="400">'
                                       : '<span aria-hidden="true">' + esc(name.charAt(0)) + '</span>') + '</div>' +
         '<span class="cat-name">' + esc(name) + '</span></a>';
@@ -68,7 +71,7 @@
     });
   }
 
-  UI.init().then(function () {
+  Promise.resolve().then(function () {
     initNewsletter();
     if (!window.VILAR_CONFIGURED) return;
     ['grid-new', 'grid-best', 'grid-sale'].forEach(function (id) {
@@ -97,4 +100,5 @@
         });
       });
   });
-})();
+}
+};
